@@ -1,33 +1,34 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import React from "react";
 import "./App.css";
+import useGeocoding from "./apis/useGeocoding";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const { fetchResult } = useGeocoding();
 
+  const [result, setResult] = React.useState<string | null>(null);
+  const [search, setSearch] = React.useState<string | null>(
+    "경기도 수원시 영통구 월드컵로 92 (원천동)"
+  );
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1>Geocoding</h1>
+      <input
+        type="text"
+        id="addressInput"
+        value={search ?? ""}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+      <button
+        onClick={() => {
+          if (!search) return;
+          fetchResult(search).then((res) => {
+            setResult(JSON.stringify(res.data));
+          });
+        }}
+      >
+        Hello
+      </button>
+      <div>{result}</div>
     </>
   );
 }
